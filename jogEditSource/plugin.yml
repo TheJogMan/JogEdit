@@ -1,0 +1,7 @@
+name: JogEdit
+main: jogEdit.JogEdit
+author: TheJogMan
+depend: [JogLib]
+version: 1.0
+api-version: 1.19
+softdepend: [WorldEdit, FAWE]
