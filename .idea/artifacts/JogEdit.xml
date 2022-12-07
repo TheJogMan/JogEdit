@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="JogEdit">
+    <output-path>$PROJECT_DIR$/out/artifacts/JogEdit</output-path>
+    <root id="archive" name="JogEdit.jar">
+      <element id="module-output" name="JogEdit" />
+    </root>
+  </artifact>
+</component>

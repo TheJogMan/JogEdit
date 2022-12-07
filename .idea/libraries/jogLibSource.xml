@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jogLibSource">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../JogLib/out/artifacts/JogLib_jar/JogLib.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../JogLib/jogLibSource" />
+    </SOURCES>
+  </library>
+</component>
