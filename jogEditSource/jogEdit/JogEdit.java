@@ -7,7 +7,6 @@ import jogEdit.tool.*;
 import jogLib.*;
 import jogLib.command.executor.*;
 import jogLib.command.filter.*;
-import jogLib.values.*;
 import jogUtil.*;
 import jogUtil.commander.*;
 import jogUtil.commander.argument.*;
@@ -24,12 +23,17 @@ public class JogEdit extends JogPlugin
 	static Wand wand;
 	static Config.Setting<Boolean> doParallelization;
 	
-	public static final UUID instanceID = UUID.randomUUID();
+	public static final UUID sessionID = UUID.randomUUID();
 	
 	@Override
 	public void onEnable()
 	{
-		registerValues();
+		TypeRegistry.RegistrationQueue.start()
+			.add("Region", RegionValue.class)
+			.add("RegionType", RegionTypeValue.class)
+			.add("Schematic", SchematicValue.class)
+			.add("RegionBehaviorData", RegionBehaviorValue.class)
+		.process();
 		
 		doParallelization = config.createSetting("DoParallelization", TypeRegistry.get(BooleanValue.class), new BooleanValue(true),
 												 "Should asynchronous operations be run in parallel threads.");
@@ -44,29 +48,6 @@ public class JogEdit extends JogPlugin
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Visualizer(), 0, Visualizer.tickInterval);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new BlockChanger.ChangeHandler(this), 0, 1);
-	}
-	
-	private static ReturnResult<Result[]> registerValues()
-	{
-		Object[][] typeClasses = {
-				{"Region", NamespacedKeyValue.class},
-				{"RegionType", LocationValue.class},
-				{"Schematic", SchematicValue.class},
-				{"RegionBehavior", RegionBehaviorValue.class}
-		};
-		
-		Result[] registrationResults = new Result[typeClasses.length];
-		for (int index = 0; index < typeClasses.length; index++)
-		{
-			Class<? extends Value<?, ?>> typeClass = (Class<? extends Value<?, ?>>)typeClasses[index][1];
-			String name = (String)typeClasses[index][0];
-			Result result = TypeRegistry.register(name, typeClass);
-			if (!result.success())
-				throw new RuntimeException("Could not register value: " + result.description());
-			registrationResults[index] = result;
-		}
-		
-		return new ReturnResult<>(registrationResults);
 	}
 	
 	public static Wand wand()

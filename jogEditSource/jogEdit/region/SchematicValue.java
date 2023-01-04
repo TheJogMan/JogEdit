@@ -120,7 +120,7 @@ public class SchematicValue extends Value<Schematic, Schematic>
 	}
 	
 	@Override
-	public List<String> argumentCompletions(Indexer<Character> indexer, Executor executor)
+	public List<String> argumentCompletions(Indexer<Character> indexer, Executor executor, Object[] data)
 	{
 		return null;
 	}

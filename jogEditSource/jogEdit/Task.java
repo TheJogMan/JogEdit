@@ -71,7 +71,7 @@ public class Task
 		return new TaskReader(getFile(id));
 	}
 	
-	private static File getFile(UUID id)
+	public static File getFile(UUID id)
 	{
 		return new File(directory.getPath() + "/" + id);
 	}
@@ -112,7 +112,7 @@ public class Task
 		{
 			try
 			{
-				id = UUID.fromString(file.getName().substring(0, file.getName().length() - 4));
+				id = UUID.fromString(file.getName());
 				
 				file.createNewFile();
 				
@@ -232,15 +232,25 @@ public class Task
 					int preMatNum = materialNumber(pr[0]);
 					int newMatNum = materialNumber(nw[0]);
 					
-					stream.write(3);
+					//3 for both previous data and new data, 4 for only previous data, 5 for only new data, 6 for no data
+					if (pr[1].length() == 2 && nw[1].length() == 2)
+						stream.write(6);
+					else if (pr[1].length() == 2)
+						stream.write(4);
+					else if (nw[1].length() == 2)
+						stream.write(5);
+					else
+						stream.write(3);
 					stream.write(IntegerValue.toByteData(worldNum));
 					stream.write(IntegerValue.toByteData(change.x));
 					stream.write(IntegerValue.toByteData(change.y));
 					stream.write(IntegerValue.toByteData(change.z));
 					stream.write(IntegerValue.toByteData(preMatNum));
-					writeString(stream, pr[1]);
+					if (pr[1].length() > 2)
+						writeString(stream, pr[1]);
 					stream.write(IntegerValue.toByteData(newMatNum));
-					writeString(stream, nw[1]);
+					if (nw[1].length() > 2)
+						writeString(stream, nw[1]);
 				}
 				catch (IOException e)
 				{
@@ -258,7 +268,7 @@ public class Task
 		stream.write(data);
 	}
 	
-	private static String readString(Indexer<Byte> source)
+	public static String readString(Indexer<Byte> source)
 	{
 		int length = IntegerValue.simpleByteConsume(source).value();
 		ByteBuffer buffer = ByteBuffer.allocate(length);
@@ -714,7 +724,6 @@ public class Task
 		
 		public void undo(BlockChanger changer)
 		{
-			System.out.println(previousData);
 			changer.change(block(), Bukkit.createBlockData(previousData));
 		}
 		

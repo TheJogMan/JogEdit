@@ -1,6 +1,6 @@
 package jogEdit.operation;
 
-import jogEdit.*;
+import jogEdit.commands.*;
 import jogEdit.operation.operations.*;
 import jogEdit.region.*;
 import jogLib.*;
@@ -37,7 +37,8 @@ public class OperationBox
 	{
 		OperationCategory()
 		{
-			super(JogLib.commandConsole, JogEdit.worldEditCompatibilityMode() ? "J" : "/", false);
+			super(JogLib.commandConsole, "Operation");
+			addTransformer(new WandHoldingModule.WandHoldingExecutorTransformer());
 		}
 		
 		public Result add(CommandComponent component)
@@ -72,7 +73,7 @@ public class OperationBox
 			});
 			changer.finish();
 			executor.respond("Replaced " + changer.changedBlocks() + " blocks.");
-		}, (new AdaptiveArgumentList()).addArgument(0, MaterialValue.class, new Object[] {true}).addArgument(0, MaterialValue.class, new Object[] {true}));
+		}, (new AdaptiveArgumentList()).addArgument(0, MaterialValue.class, new Object[] {true}).addArgument(0, MaterialValue.class, new Object[] {true, MaterialValue.BoundingFormat.SPACE_TERMINATED}));
 		
 		new AsyncRegionOperation.SimpleAsyncRegionOperation("Fill", "Fills a region with the given material.", (result, executor, wand, region, changer) ->
 		{
@@ -80,7 +81,7 @@ public class OperationBox
 			region.forEach(block -> changer.change(block, material));
 			changer.finish();
 			executor.respond("Filled " + changer.changedBlocks() + " blocks.");
-		}, (new AdaptiveArgumentList()).addArgument(0, MaterialValue.class, new Object[] {true}));
+		}, (new AdaptiveArgumentList()).addArgument(0, MaterialValue.class, new Object[] {true, MaterialValue.BoundingFormat.SPACE_TERMINATED}));
 		
 		new Operation.SimpleOperation("Clear", "Clears the wands region selection.", (result, executor, wand, changer) ->
 		{

@@ -9,7 +9,11 @@ import jogUtil.data.*;
 import jogUtil.data.values.*;
 import jogUtil.richText.*;
 import org.bukkit.*;
+import org.bukkit.block.*;
 import org.bukkit.enchantments.*;
+import org.bukkit.entity.*;
+import org.bukkit.event.block.*;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.plugin.*;
@@ -71,6 +75,13 @@ public class Wand extends CustomItemType<Wand.WandItem>
 	protected WandItem getObject(ItemStack stack)
 	{
 		return new WandItem(stack);
+	}
+	
+	@Override
+	protected void playerInteract(WandItem item, Player player, Block block, Action action, BlockFace face, EquipmentSlot slot, PlayerInteractEvent event)
+	{
+		event.setCancelled(true);
+		item.getToolType().interact(new WandHoldingModule(player), block, action, face, slot, event, item.getTool(), item);
 	}
 	
 	public static class WandItem extends CustomItemType.CustomItem
@@ -283,7 +294,7 @@ public class Wand extends CustomItemType<Wand.WandItem>
 			data.put("ID", new UUIDValue(id));
 			data.put("Destination", new StringValue(destination.toString()));
 			data.put("Name", new StringValue(name));
-			data.put("Instance ID", new UUIDValue(JogEdit.instanceID));
+			data.put("Instance ID", new UUIDValue(JogEdit.sessionID));
 			
 			Data wandData = getData();
 			ListValue<DataValue> tasks = wandData.getObject("Active Tasks", new ListValue<>(TypeRegistry.get(DataValue.class)));
@@ -307,18 +318,12 @@ public class Wand extends CustomItemType<Wand.WandItem>
 			if (taskIndex != -1)
 			{
 				Data data = tasks.remove(taskIndex).get();
+				setData(wandData);
 				TaskDestination destination = TaskDestination.valueOf(data.getValue("Destination", new StringValue(TaskDestination.NONE.toString())));
 				if (destination.equals(TaskDestination.UNDO))
-				{
-					ListValue<UUIDValue> stack = wandData.getObject("Undo Stack", new ListValue<>(TypeRegistry.get(UUIDValue.class)));
-					stack.add(data.getObject("ID", new UUIDValue()));
-				}
+					pushToUndo(data.getObject("ID", new UUIDValue()).get());
 				else if (destination.equals(TaskDestination.REDO))
-				{
-					ListValue<UUIDValue> stack = wandData.getObject("Redo Stack", new ListValue<>(TypeRegistry.get(UUIDValue.class)));
-					stack.add(data.getObject("ID", new UUIDValue()));
-				}
-				setData(wandData);
+					pushToRedo(data.getObject("ID", new UUIDValue()).get());
 			}
 		}
 		

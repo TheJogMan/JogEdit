@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="jogLibSource">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../JogLib/out/artifacts/JogLib_jar/JogLib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../JogLib/out/artifacts/JogLib/JogLib.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

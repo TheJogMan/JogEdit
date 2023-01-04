@@ -133,7 +133,7 @@ public class Schematic implements Iterable<BlockData>
 	
 	public BlockData get(int x, int y, int z)
 	{
-		if (x >= 0 && x < width() && y>= 0 && y < height() && z >= 0 && z < depth())
+		if (x >= 0 && x < width() && y >= 0 && y < height() && z >= 0 && z < depth())
 			return data[x][y][z];
 		else
 			throw new IndexOutOfBoundsException();
@@ -158,7 +158,7 @@ public class Schematic implements Iterable<BlockData>
 		@Override
 		public boolean hasNext()
 		{
-			return x <= schematic.width() && y <= schematic.height() && z <= schematic.depth();
+			return x < schematic.width() && y < schematic.height() && z < schematic.depth();
 		}
 		
 		@Override

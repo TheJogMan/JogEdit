@@ -39,7 +39,7 @@ public class RegionValue extends Value<Region, Region>
 	public static String toString(Region region)
 	{
 		return "{World: " + (region.world() == null ? "None." : region.world().getName()) + ", " +
-			   "Corner 1: " + VectorValue.toString(region.corner1) + "," +
+			   "Corner 1: " + VectorValue.toString(region.corner1) + ", " +
 			   "Corner 2: " + VectorValue.toString(region.corner2) + ", " +
 			   "Type: " + RegionTypeValue.toString(region.type) + "}";
 	}
@@ -102,7 +102,7 @@ public class RegionValue extends Value<Region, Region>
 	}
 	
 	@Override
-	public List<String> argumentCompletions(Indexer<Character> indexer, Executor executor)
+	public List<String> argumentCompletions(Indexer<Character> indexer, Executor executor, Object[] data)
 	{
 		return null;
 	}
@@ -152,6 +152,13 @@ public class RegionValue extends Value<Region, Region>
 			if (!StringValue.consumeSequence(source, "{world:", false))
 				return new Consumer.ConsumptionResult<>(source, "Must begin with '{world:'");
 			
+			World world;
+			String name = StringValue.consumeString(source, ',');
+			if (name.equalsIgnoreCase("none."))
+				world = null;
+			else
+				world = Bukkit.getWorld(name);
+			
 			if (!StringValue.consumeSequence(source, ",corner1:", false))
 				return new Consumer.ConsumptionResult<>(source, "World name must be followed by ',corner1:'");
 			
@@ -176,13 +183,6 @@ public class RegionValue extends Value<Region, Region>
 			source.popFilterState();
 			if (source.atEnd() || source.next() != '}')
 				return new Consumer.ConsumptionResult<>(source, "Must end with '}");
-			
-			String name = StringValue.consumeString(source, ',');
-			World world;
-			if (name.equalsIgnoreCase("none."))
-				world = null;
-			else
-				world = Bukkit.getWorld(name);
 			
 			Region region = new Region(world, (Vector)corner1Result.value().get(), (Vector)corner2Result.value().get());
 			region.type = (Region.RegionType)typeResult.value().get();

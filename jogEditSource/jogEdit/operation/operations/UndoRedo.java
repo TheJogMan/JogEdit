@@ -39,7 +39,7 @@ public abstract class UndoRedo extends AsyncRegionOperation
 		Task.TaskReader reader = Task.get(id);
 		executor.respond(this.name() + "ing " + reader.name());
 		wand.beginTask(id, destination, this.name() + " " + reader.name());
-		while (!reader.atEnd())
+		while (reader.hasNext() || !reader.atEnd())
 		{
 			Task.ChangedBlock change = reader.next();
 			if (change != null)

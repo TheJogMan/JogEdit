@@ -53,7 +53,7 @@ public class ToolBox
 	public static class ToolArgument extends PlainArgument<ToolType>
 	{
 		@Override
-		public ReturnResult<ToolType> interpretArgument(Indexer<Character> source, Executor executor)
+		public ReturnResult<ToolType> interpretArgument(Indexer<Character> source, Executor executor, Object[] data)
 		{
 			String name = StringValue.consumeAlphabeticalString(source);
 			ToolType type = tools.get(name);
@@ -64,7 +64,7 @@ public class ToolBox
 		}
 		
 		@Override
-		public List<String> argumentCompletions(Indexer<Character> source, Executor executor)
+		public List<String> argumentCompletions(Indexer<Character> source, Executor executor, Object[] data)
 		{
 			ArrayList<String> completions = new ArrayList<>();
 			tools().forEach(type -> completions.add(type.name()));

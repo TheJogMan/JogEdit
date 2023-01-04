@@ -8,6 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jogLibSource" level="project" />
-    <orderEntry type="library" name="spigot-api-1.19.2-R0.1-SNAPSHOT-shaded" level="project" />
+    <orderEntry type="library" name="spigot-api-1.19.3" level="project" />
   </component>
 </module>
